@@ -1,47 +1,89 @@
 const biblioteca = {
-    estante: [],
+    livros: [],
 
-    adicionarLivro(livro) {
-        this.estante.push(livro);
-        console.log(`Livro adicionado: ${livro.nome}`);
+    adicionarLivros(nome, autor, categoria, estoque) {
+        const livro = {
+            nome: nome,
+            autor: autor,
+            categoria: categoria,
+            estoque: estoque,
+            disponivel: estoque > 0,
+            alugado: false,
+            vezesAlugado: 0
+        };
+
+        this.livros.push(livro);
+
+        console.log("Livro adicionado:", livro.nome);
+    },
+
+    mostrarLivros() {
+        for (let i = 0; i < this.livros.length; i++) {
+            const p = this.livros[i];
+            console.log(
+                `${p.nome} - ${p.autor} | Estoque: ${p.estoque} | Alugado: ${p.alugado}`
+            );
+        }
+    },
+
+    alugar(nome) {
+        for (let i = 0; i < this.livros.length; i++) {
+            const p = this.livros[i];
+
+            if (p.nome === nome) {
+                if (p.estoque > 0) {
+                    p.estoque--;
+                    p.alugado = true;
+                    p.vezesAlugado++;
+
+                    if (p.estoque === 0) {
+                        p.disponivel = false;
+                    }
+
+                    console.log("Livro " + nome + " alugado com sucesso!");
+                } else {
+                    console.log("O livro " + nome + " está sem estoque!");
+                }
+
+                return;
+            }
+        }
+
+        console.log("O livro " + nome + " não existe.");
+    },
+
+    devolver(nome) {
+        for (let i = 0; i < this.livros.length; i++) {
+            const p = this.livros[i];
+
+            if (p.nome === nome) {
+                p.estoque++;
+                p.disponivel = true;
+                p.alugado = false;
+
+                console.log("Livro " + nome + " devolvido com sucesso!");
+                return;
+            }
+        }
+
+        console.log("O livro " + nome + " não existe.");
     }
 };
 
+// Teste
+biblioteca.adicionarLivros(
+    "pinoquio",
+    "Carlo Collodi",
+    "Literatura Infantil e Infanto-Juvenil",
+    210
+);
 
-biblioteca.adicionarLivro({
-    nome: "O_Reino_das_Sombras_Violetas",
-    autor: "Autor Desconhecido",
-    genero: "Fantasia",
-    categoria: "Aventura"
-});
+biblioteca.mostrarLivros();
 
-biblioteca.adicionarLivro({
-    nome: "A_Coroa_dos_Dragões",
-    autor: "Autor Desconhecido",
-    genero: "Fantasia",
-    categoria: "Aventura"
-});
+biblioteca.alugar("pinoquio");
 
-biblioteca.adicionarLivro({
-    nome: "O_Último_Feiticeiro",
-    autor: "Autor Desconhecido",
-    genero: "Fantasia",
-    categoria: "Magia"
-});
+biblioteca.mostrarLivros();
 
-biblioteca.adicionarLivro({
-    nome: "As_Crônicas_de_Eldoria",
-    autor: "Autor Desconhecido",
-    genero: "Fantasia",
-    categoria: "Épico"
-});
+biblioteca.devolver("pinoquio");
 
-biblioteca.adicionarLivro({
-    nome: "A_Espada_da_Lua_Negra",
-    autor: "Autor Desconhecido",
-    genero: "Fantasia",
-    categoria: "Aventura"
-});
-
-console.log("Estante:");
-console.log(biblioteca.estante);
+biblioteca.mostrarLivros();
