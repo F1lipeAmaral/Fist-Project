@@ -7,7 +7,7 @@ const biblioteca = {
             autor: autor,
             categoria: categoria,
             estoque: estoque,
-            disponivel: estoque > 0,
+            disponivel: true,
             alugado: false,
             vezesAlugado: 0
         };
@@ -20,9 +20,7 @@ const biblioteca = {
     mostrarLivros() {
         for (let i = 0; i < this.livros.length; i++) {
             const p = this.livros[i];
-            console.log(
-                `${p.nome} - ${p.autor} | Estoque: ${p.estoque} | Alugado: ${p.alugado}`
-            );
+            console.log(`${p.nome} - ${p.autor}`);
         }
     },
 
@@ -31,21 +29,20 @@ const biblioteca = {
             const p = this.livros[i];
 
             if (p.nome === nome) {
-                if (p.estoque > 0) {
-                    p.estoque--;
+                if (p.disponivel && p.estoque > 0) {
+                    p.disponivel = false;
                     p.alugado = true;
                     p.vezesAlugado++;
+                    p.estoque--;
 
-                    if (p.estoque === 0) {
-                        p.disponivel = false;
-                    }
-
-                    console.log("Livro " + nome + " alugado com sucesso!");
-                } else {
+                    console.log(nome + " alugado com sucesso");
+                } else if (p.estoque <= 0) {
                     console.log("O livro " + nome + " está sem estoque!");
+                } else {
+                    console.log("O livro " + nome + " já está alugado!");
                 }
 
-                return;
+                return; // encerra a função quando encontra o livro
             }
         }
 
@@ -55,35 +52,152 @@ const biblioteca = {
     devolver(nome) {
         for (let i = 0; i < this.livros.length; i++) {
             const p = this.livros[i];
-
             if (p.nome === nome) {
-                p.estoque++;
-                p.disponivel = true;
-                p.alugado = false;
-
-                console.log("Livro " + nome + " devolvido com sucesso!");
-                return;
+                if (p.disponivel == false) {
+                    p.disponivel = true;
+                    p.alugado = false;
+                    p.estoque = 1;
+                    console.log("Livro", nome, "devolvido com sucesso!");
+                    return;
+                } else {
+                    console.log("O", nome, "ja esta disponivel!")
+                    return;
+                }
             }
         }
+        console.log("O", nome, "Nao foi encontrado!!")
+    },
+    
+    removerLivro(nome){
+        for(let i = 0; i < this.livros.length; i++) {
+            if(this.livros[i].nome.toLowerCase() === nome.toLowerCase()) {
+                const removido = this.livros[i];
+                this.livros.splice(i, 1);
+                console.log("Livro removido", removido.nome);
+                return;
+            }
+        } console.log("Produto não encontrado");
+    },
 
-        console.log("O livro " + nome + " não existe.");
+    buscarLivro(nome) {
+        for(let i = 0; i < this.livros.length; i++) {
+            const p = this.livros[i]
+            if(p.nome.toLowerCase() === nome.toLowerCase()) {
+                console.log("Nome: " + p.nome);
+                console.log("Estoque: " + p.estoque)
+                return p;
+            }
+        }
+        console.log("Livro não encontrado");
+        return null
     }
-};
+}
 
-// Teste
+
+
 biblioteca.adicionarLivros(
-    "pinoquio",
-    "Carlo Collodi",
-    "Literatura Infantil e Infanto-Juvenil",
+    "As 48 Leis do Poder",
+    "Robert Grenne",
+    "Negócios e Desenvolvimento Pessoal",
     210
 );
 
+biblioteca.adicionarLivros(
+    "Pai Rico, Pai Pobre",
+    "Robert Kiyosaki",
+    "Finanças",
+    150
+);
+
+biblioteca.adicionarLivros(
+    "O Homem Mais Rico da Babilônia",
+    "George S. Clason",
+    "Finanças",
+    120
+);
+
+biblioteca.adicionarLivros(
+    "Hábitos Atômicos",
+    "James Clear",
+    "Desenvolvimento Pessoal",
+    180
+);
+
+biblioteca.adicionarLivros(
+    "O Poder do Hábito",
+    "Charles Duhigg",
+    "Desenvolvimento Pessoal",
+    160
+);
+
+biblioteca.adicionarLivros(
+    "A Arte da Guerra",
+    "Sun Tzu",
+    "Estratégia",
+    90
+);
+
+biblioteca.adicionarLivros(
+    "O Príncipe",
+    "Nicolau Maquiavel",
+    "Política",
+    80
+);
+
+biblioteca.adicionarLivros(
+    "Mais Esperto que o Diabo",
+    "Napoleon Hill",
+    "Desenvolvimento Pessoal",
+    140
+);
+
+biblioteca.adicionarLivros(
+    "Pense e Enriqueça",
+    "Napoleon Hill",
+    "Finanças",
+    170
+);
+
+biblioteca.adicionarLivros(
+    "O Milagre da Manhã",
+    "Hal Elrod",
+    "Desenvolvimento Pessoal",
+    130
+);
+
+biblioteca.adicionarLivros(
+    "Quem Pensa Enriquece",
+    "Napoleon Hill",
+    "Finanças",
+    110
+);
+
+console.log("\n---------------- LISTA DE LIVROS ---------------")
+
 biblioteca.mostrarLivros();
 
-biblioteca.alugar("pinoquio");
+console.log("\n------------------------------------------------")
 
-biblioteca.mostrarLivros();
+console.log("\n---------------- ALUGUEL DE LIVROS --------------------")
 
-biblioteca.devolver("pinoquio");
+biblioteca.alugar("As 48 Leis do Poder");
 
-biblioteca.mostrarLivros();
+console.log("\n----------------------------------------------------")
+
+console.log("\n---------------- DEVOLUÇÂO DE LIVROS -----------------------")
+
+biblioteca.devolver("As 48 Leis do Poder");
+
+console.log("\n-------------------------------------------------------")
+
+console.log("\n----------------- ALERTA DE LIVROS REMOVIDOS --------------------")
+
+biblioteca.removerLivro("As 48 Leis do Poder")
+
+console.log("\n-------------------------------------------------------")
+
+console.log("\n----------------- BUSCA DE LIVROS --------------------")
+
+biblioteca.buscarLivro("O Príncipe")
+
+console.log("\n-------------------------------------------------------")
